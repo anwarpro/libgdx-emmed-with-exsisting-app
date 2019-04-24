@@ -90,7 +90,6 @@ public class TestScale extends ApplicationAdapter implements GestureDetector.Ges
     public static final int RUBBER = 2;
     public static final int STONE = 3;
 
-    private int ballShooted = 0;
     private int ballRemain = 3;
     private int ballStored = 0;
     private int round = 1;
@@ -558,7 +557,6 @@ public class TestScale extends ApplicationAdapter implements GestureDetector.Ges
                     if (ballStored > 0) {
 
                         ballRemain = ballStored;
-                        ballShooted = 0;
                         ballStored = 0;
                         round++;
 
@@ -582,7 +580,6 @@ public class TestScale extends ApplicationAdapter implements GestureDetector.Ges
                     if (ballStored > 0) {
 
                         ballRemain = ballStored;
-                        ballShooted = 0;
                         ballStored = 0;
                         round++;
 
@@ -590,12 +587,15 @@ public class TestScale extends ApplicationAdapter implements GestureDetector.Ges
                         moving = true;
                         topDownContainer = null;
 
-                        if (round > 3) {
-                            float max = cam.viewportWidth - 1.5f;
-                            float min = 1.5f;
+                        float left = 2f;
+                        float right = cam.viewportWidth - 2f;
 
-                            Random random = new Random();
-                            xpos = min + random.nextFloat() * (max - min);
+                        if (round > 2) {
+                            if (round % 2 == 0) {
+                                xpos = left;
+                            } else {
+                                xpos = right;
+                            }
                         }
 
                         resetGame();
@@ -731,7 +731,6 @@ public class TestScale extends ApplicationAdapter implements GestureDetector.Ges
                     if (ballBody.getLinearVelocity().y == 0) {
 
                         shoot = true;
-                        ballShooted++;
                         ballRemain--;
 
                         float speed = new Vector2(ballBody.getPosition().x, ballBody.getPosition().y)
