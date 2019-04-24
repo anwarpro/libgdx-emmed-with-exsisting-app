@@ -14,8 +14,10 @@ public class SpriteAccessor implements TweenAccessor<Sprite> {
         switch (tweenType) {
             case TYPE_Y:
                 returnValues[0] = target.getY();
+                return 1;
             case TYPE_X:
                 returnValues[0] = target.getX();
+                return 1;
             case TYPE_XY:
                 returnValues[0] = target.getX();
                 returnValues[1] = target.getY();
