@@ -19,7 +19,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -37,7 +36,6 @@ import java.util.Random;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
-import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
 
@@ -121,6 +119,7 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
     private Sprite spriteGameOver;
     private boolean moving;
     private Tween flashHintAnim;
+    private Tween flashHintAnimUp;
 
     public Basketball() {
         manager = new TweenManager();
@@ -285,9 +284,8 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
         texture = new Texture(fileResolver.resolve("ball.png")); // +++
         spriteBall = new Sprite(texture);
 
-        spriteHintCircle = new Sprite(new Texture(fileResolver.resolve("arrow.png")));
-//        spriteHintArrow = new Sprite(new Texture(fileResolver.resolve("Yellow-Arrow.png")));
-//        spriteHintArrow.flip(false, true);
+        spriteHintCircle = new Sprite(new Texture(fileResolver.resolve("circle.png")));
+        spriteHintArrow = new Sprite(new Texture(fileResolver.resolve("arrowup.png")));
 
         spriteGameOver = new Sprite(new Texture(fileResolver.resolve("pause.jpg")));
 
@@ -361,7 +359,17 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
         Gdx.input.setInputProcessor(new GestureDetector(this));
         world.setContactListener(this);
 
+        gameOver = false;
+        round = 1;
+        score = 0;
+
         if (data.isHint()) {
+            spriteHintArrow.setY(cam.viewportHeight / 2f - 1f);
+            flashHintAnimUp = Tween.from(spriteHintArrow, SpriteAccessor.TYPE_Y, 1f)
+                    .target(2f)
+                    .ease(TweenEquations.easeNone)
+                    .repeat(Tween.INFINITY, 1f)
+                    .start(manager);
             flashHintAnim = Tween.from(spriteHintCircle, SpriteAccessor.TYPY_ALPHA, 2f)
                     .target(0f)
                     .ease(TweenEquations.easeNone)
@@ -444,9 +452,10 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
                 //lose
             }
 
+            //first round check
             if (round == 1 && ballStored < 3) {
                 resetGame();
-            } else if (round == 1 && ballStored > 3) {
+            } else if (round == 1 && ballStored >= 3) { //check
                 ballRemain = ballStored;
                 ballStored = 0;
                 round++;
@@ -521,7 +530,7 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
 
         if (round > 1) {
             if (ballStored > 0) {
-                if (ballStored > 3) {
+                if (ballStored >= 3) {
                     currentJar = spriteBallJar[3];
                 } else {
                     currentJar = spriteBallJar[ballStored];
@@ -538,7 +547,7 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
 
         } else {
             if (ballStored > 0) {
-                if (ballStored > 3) {
+                if (ballStored >= 3) {
                     currentJar = spriteBallJar[3];
                 } else {
                     currentJar = spriteBallJar[ballStored];
@@ -615,10 +624,10 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
             spriteHintCircle.setPosition(ballBody.getPosition().x - r * 1.5f, ballBody.getPosition().y - r * 1.5f);
             spriteHintCircle.draw(batch);
 
-//            spriteHintArrow.setSize(2f, 2f);
-//            spriteHintArrow.setOriginCenter();
-//            batch.draw(spriteHintArrow, cam.viewportWidth / 2f, ballBody.getPosition().y,
-//                    2f, 2f);
+            spriteHintArrow.setSize(1f, 2f);
+            spriteHintArrow.setOriginCenter();
+            spriteHintArrow.setX(ballBody.getPosition().x - 0.5f);
+            spriteHintArrow.draw(batch);
         }
 
         if (drawGem) {
@@ -692,7 +701,9 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
         if (data.isHint()) {
             data.setHint(false);
             flashHintAnim.pause();
+            flashHintAnimUp.pause();
             flashHintAnim = null;
+            flashHintAnimUp = null;
         }
 
         if (gameOver) {
