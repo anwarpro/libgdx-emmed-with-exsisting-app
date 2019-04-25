@@ -8,6 +8,7 @@ public class SpriteAccessor implements TweenAccessor<Sprite> {
     public static final int TYPE_Y = 1;
     public static final int TYPE_X = 2;
     public static final int TYPE_XY = 3;
+    public static final int TYPY_ALPHA = 4;
 
     @Override
     public int getValues(Sprite target, int tweenType, float[] returnValues) {
@@ -22,6 +23,10 @@ public class SpriteAccessor implements TweenAccessor<Sprite> {
                 returnValues[0] = target.getX();
                 returnValues[1] = target.getY();
                 return 2;
+
+            case TYPY_ALPHA:
+                returnValues[0] = target.getColor().a;
+                return 1;
 
             default:
                 assert false;
@@ -42,6 +47,9 @@ public class SpriteAccessor implements TweenAccessor<Sprite> {
                 target.setX(newValues[0]);
                 target.setY(newValues[1]);
                 break;
+
+            case TYPY_ALPHA:
+                target.setAlpha(newValues[0]);
             default:
                 assert false;
                 break;

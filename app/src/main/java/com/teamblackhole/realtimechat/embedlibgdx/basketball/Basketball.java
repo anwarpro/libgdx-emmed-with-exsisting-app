@@ -36,10 +36,11 @@ import java.util.Random;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
+import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
 
-public class TestScale extends ApplicationAdapter implements GestureDetector.GestureListener, ContactListener {
+public class Basketball extends ApplicationAdapter implements GestureDetector.GestureListener, ContactListener {
     private static final float BALL_RADIOS = 0.5f;
     private static final float GROUND_Y = 0.5f;
     private static final float RIM_RADIOS = 0.02f;
@@ -118,8 +119,9 @@ public class TestScale extends ApplicationAdapter implements GestureDetector.Ges
     private Sprite spriteHintArrow;
     private Sprite spriteGameOver;
     private boolean moving;
+    private Tween flashHintAnim;
 
-    public TestScale() {
+    public Basketball() {
         manager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
         data = GameData.getInstance();
@@ -282,9 +284,9 @@ public class TestScale extends ApplicationAdapter implements GestureDetector.Ges
         texture = new Texture(fileResolver.resolve("ball.png")); // +++
         spriteBall = new Sprite(texture);
 
-        spriteHintCircle = new Sprite(new Texture(fileResolver.resolve("circle.png")));
-        spriteHintArrow = new Sprite(new Texture(fileResolver.resolve("Yellow-Arrow.png")));
-        spriteHintArrow.flip(false, true);
+        spriteHintCircle = new Sprite(new Texture(fileResolver.resolve("arrow.png")));
+//        spriteHintArrow = new Sprite(new Texture(fileResolver.resolve("Yellow-Arrow.png")));
+//        spriteHintArrow.flip(false, true);
 
         spriteGameOver = new Sprite(new Texture(fileResolver.resolve("pause.jpg")));
 
@@ -357,6 +359,15 @@ public class TestScale extends ApplicationAdapter implements GestureDetector.Ges
 
         Gdx.input.setInputProcessor(new GestureDetector(this));
         world.setContactListener(this);
+
+        if (data.isHint()) {
+            flashHintAnim = Tween.from(spriteHintCircle, SpriteAccessor.TYPY_ALPHA, 1f)
+                    .target(0f)
+                    .ease(TweenEquations.easeNone)
+                    .repeat(Tween.INFINITY, 1f)
+                    .start(manager);
+        }
+
     }
 
     private void soundLoad() {
@@ -597,16 +608,15 @@ public class TestScale extends ApplicationAdapter implements GestureDetector.Ges
         }
 
         if (data.isHint()) {
-
-            spriteHintCircle.setSize(4 * r, 4 * r);
+            spriteHintCircle.setSize(3f * r, 3f * r);
             spriteHintCircle.setOriginCenter();
-            batch.draw(spriteHintCircle, ballBody.getPosition().x - r * 2,
-                    ballBody.getPosition().y - r * 2, r * 4, 4 * r);
+            batch.draw(spriteHintCircle, ballBody.getPosition().x - r * 1.5f,
+                    ballBody.getPosition().y - r * 1.5f, r * 3, 3 * r);
 
-            spriteHintArrow.setSize(2f, 2f);
-            spriteHintArrow.setOriginCenter();
-            batch.draw(spriteHintArrow, cam.viewportWidth / 2f, ballBody.getPosition().y,
-                    2f, 2f);
+//            spriteHintArrow.setSize(2f, 2f);
+//            spriteHintArrow.setOriginCenter();
+//            batch.draw(spriteHintArrow, cam.viewportWidth / 2f, ballBody.getPosition().y,
+//                    2f, 2f);
         }
 
         if (drawGem) {
@@ -679,6 +689,8 @@ public class TestScale extends ApplicationAdapter implements GestureDetector.Ges
 
         if (data.isHint()) {
             data.setHint(false);
+            flashHintAnim.pause();
+            flashHintAnim = null;
         }
 
         if (gameOver) {
