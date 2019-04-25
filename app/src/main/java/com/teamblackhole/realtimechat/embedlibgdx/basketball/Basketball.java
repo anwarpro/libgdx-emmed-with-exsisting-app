@@ -604,9 +604,9 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
         if (!moving) {
             spriteBall.setSize(2 * r, 2 * r);
             spriteBall.setOriginCenter();
+            spriteBall.setPosition(ballBody.getPosition().x - r, ballBody.getPosition().y - r);
             spriteBall.setRotation(ballBody.getAngle() * MathUtils.radiansToDegrees);
-            batch.draw(spriteBall, ballBody.getPosition().x - r, ballBody.getPosition().y - r,
-                    r * 2, 2 * r);
+            spriteBall.draw(batch);
         }
 
         if (data.isHint()) {
