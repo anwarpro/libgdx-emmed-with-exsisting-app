@@ -49,7 +49,8 @@ public class SpriteAccessor implements TweenAccessor<Sprite> {
                 break;
 
             case TYPY_ALPHA:
-                target.setAlpha(newValues[0]);
+                target.setColor(target.getColor().r, target.getColor().g, target.getColor().b, newValues[0]);
+                break;
             default:
                 assert false;
                 break;

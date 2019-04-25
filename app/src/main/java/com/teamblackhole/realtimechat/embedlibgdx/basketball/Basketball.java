@@ -361,7 +361,7 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
         world.setContactListener(this);
 
         if (data.isHint()) {
-            flashHintAnim = Tween.from(spriteHintCircle, SpriteAccessor.TYPY_ALPHA, 1f)
+            flashHintAnim = Tween.from(spriteHintCircle, SpriteAccessor.TYPY_ALPHA, 2f)
                     .target(0f)
                     .ease(TweenEquations.easeNone)
                     .repeat(Tween.INFINITY, 1f)
