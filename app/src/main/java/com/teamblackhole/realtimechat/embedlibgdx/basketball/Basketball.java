@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -603,6 +604,7 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
         if (!moving) {
             spriteBall.setSize(2 * r, 2 * r);
             spriteBall.setOriginCenter();
+            spriteBall.setRotation(ballBody.getAngle() * MathUtils.radiansToDegrees);
             batch.draw(spriteBall, ballBody.getPosition().x - r, ballBody.getPosition().y - r,
                     r * 2, 2 * r);
         }
