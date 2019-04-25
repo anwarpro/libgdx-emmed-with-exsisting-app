@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import aurelienribon.tweenengine.TweenAccessor;
 
 public class SpriteAccessor implements TweenAccessor<Sprite> {
+    
     public static final int TYPE_Y = 1;
     public static final int TYPE_X = 2;
     public static final int TYPE_XY = 3;

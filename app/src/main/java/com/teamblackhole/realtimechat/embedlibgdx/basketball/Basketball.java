@@ -124,6 +124,7 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
     public Basketball() {
         manager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
+        Tween.registerAccessor(Shape.class, new ShapeAccessor());
         data = GameData.getInstance();
     }
 
@@ -771,7 +772,19 @@ public class Basketball extends ApplicationAdapter implements GestureDetector.Ge
                         initialVelocity.rotate(angle - 45);
 
                         ballBody.setLinearVelocity(initialVelocity.x, initialVelocity.y);
-                        ballBody.getFixtureList().get(0).getShape().setRadius(0.3f);
+
+                        //tween animation for ball size decrease
+                        Tween.to(ballBody.getFixtureList().get(0).getShape(), ShapeAccessor.TYPE_RADIUS, 1f)
+                                .target(0.3f)
+                                .ease(TweenEquations.easeNone)
+                                .setCallbackTriggers(TweenCallback.COMPLETE)
+                                .setCallback(new TweenCallback() {
+                                    @Override
+                                    public void onEvent(int type, BaseTween<?> source) {
+//                                        Gdx.app.log("BALL Radius", "Ball size decresed");
+                                    }
+                                })
+                                .start(manager);
                     }
                 }
             }
